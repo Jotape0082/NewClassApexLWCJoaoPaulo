@@ -247,6 +247,84 @@ public with sharing class ClasseDemonstraEstrutura { // inicio da classe
         insert accountList;  
     }
     
+     //MAPS
+     public static void demonstraMap(){
+        List<Opportunity> opportunityList =  new List<Opportunity>([SELECT Id, Name FROM Opportunity]);
+        system.debug('opportunityList '+opportunityList);
+        /*
+            opportunityList (
+                Opportunity:{Id=0068c00000pMREmAAO, Name=Edge Emergency Generator}
+                , Opportunity:{Id=0068c00000pMREtAAO, Name=Edge Installation}
+                , Opportunity:{Id=0068c00000pMREuAAO, Name=Edge SLA}
+                , Opportunity:{Id=0068c00000pMRF8AAO, Name=Edge Emergency Generator}
+            )
+        */
+
+        for(Opportunity vTemp : opportunityList){
+            if(vTemp.Id == '0068c00000pMREeAAO'){
+
+            }
+        }
+
+        //Mapas
+        Map<Id, Opportunity> opportunityMap = new Map<Id, Opportunity>([SELECT Id, Name FROM Opportunity]);
+        system.debug('opportunityMap '+opportunityMap);
+        /*
+            opportunityMap {
+                0068c00000pMREeAAO=Opportunity:{Id=0068c00000pMREeAAO, Name=Dickenson Mobile Generators}
+                , 0068c00000pMREfAAO=Opportunity:{Id=0068c00000pMREfAAO, Name=United Oil Office Portable Generators}
+                , 0068c00000pMREgAAO=Opportunity:{Id=0068c00000pMREgAAO, Name=Express Logistics Standby Generator}
+                , 0068c00000pMREhAAO=Opportunity:{Id=0068c00000pMREhAAO, Name=GenePoint Standby Generator}
+                , 0068c00000pMREiAAO=Opportunity:{Id=0068c00000pMREiAAO, Name=Grand Hotels Kitchen Generator}
+            }    
+        */
+        if(opportunityMap.containsKey('0068c00000pMREeZZZ')){
+            system.debug('Contem o id');
+        }else{
+            system.debug('Não contem o id');
+        }
+    }
+
+    //DESAFIO - Receber um número inteiro no parâmetro, e vão criar as contas conforme este número com o nome 'Conta DESAFIO 1', 'Conta DESAFIO 2'; Caso a conta com o nome exista, não deve ser criado, pois não queremos mais de uma conta com o mesmo nome
+    public static void insertAccountsDesafioNomeSemMap(Integer quantidadeContas){
+        List<Account> accountList = new List<Account>();
+
+        for(Integer itemp = 1; itemp <= quantidadeContas; itemp++){
+            String nameAcoount = 'Conta DESAFIO '+itemp;
+            List<Account> accountListCons = new List<Account>([SELECT Id, Name FROM Account WHERE Name = : nameAcoount]);
+            if(accountListCons.size() == 0){
+                Account accountObj = new Account();
+                accountObj.Name = nameAcoount;
+                accountList.add(accountObj);
+            }
+        }
+        if(accountList.size() > 0){
+            insert accountList;
+        }
+    }    
+
+    public static void insertAccountsDesafioNomeComMap(Integer quantidadeContas){
+        List<Account> accountList = new List<Account>();
+
+        //aqui eu crio e alimento o meu map
+        Map<String, Account> accountMap = new Map<String, Account>();
+        for(Account vTemp : [SELECT Id, Name FROM Account]){
+            accountMap.put(vTemp.Name, vTemp);
+        }
+
+        for(Integer itemp = 1; itemp <= quantidadeContas; itemp++){
+            String nameAcoount = 'Conta DESAFIO '+itemp;
+            //se não tiver no map croa, o "!" é usado para negação
+            if(!accountMap.containsKey(nameAcoount)){
+                Account accountObj = new Account();
+                accountObj.Name = nameAcoount;
+                accountList.add(accountObj);
+            }
+        }
+        if(accountList.size() > 0){
+            insert accountList;
+        }
+    }       
 
 }// Fim da Classe
 
