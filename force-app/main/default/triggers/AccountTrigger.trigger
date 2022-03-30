@@ -2,26 +2,24 @@
 
 trigger AccountTrigger on Account (after insert) {
 
-    if (Trigger.isInsert && Trigger.isAfter) {
-        List<Task> taskList=new List<Task>();
-    
-        for(Account acc:trigger.new)
-        {    
-            if(acc.Ownership =='Private'){
-                
-                Task taskObj         = new Task();
-                taskObj.Subject      = 'Verifique os dados Cadastrais';
-                taskObj.ActivityDate = System.today();
-                taskObj.whatId       = acc.Id;  
-                taskObj.OwnerId      = acc.OwnerId;
-                tasklist.add(taskObj);
+    if(Trigger.isInsert && Trigger.isAfter){
+
+        List<Task> taskList = new List<Task>();
+
+        for(Account aTemp : Trigger.New){
+            if(aTemp.OwnerShip == 'Private'){
+                Task taskObj = new Task();
+                taskObj.Subject = 'Verificar dados das contas';
+                taskObj.ActivityDate = System.Today();
+                taskObj.WhatId = aTemp.Id;
+                taskObj.OwnerId = aTemp.OwnerId;
+                //insert taskObj;
+                taskList.add(taskObj);
             }
         }
 
-        if(taskList.size()>0)      
-        {
-            insert tasklist;
+        if(taskList.size() > 0){
+            insert taskList;
         }
     }
-
 }
