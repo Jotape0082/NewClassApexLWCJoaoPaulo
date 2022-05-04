@@ -2,34 +2,61 @@ import { LightningElement, wire, track } from 'lwc';
 import { CurrentPageReference } from 'lightning/navigation';
 import {fireEvent, registerListener} from 'c/pubsub';
 import addNewCase from '@salesforce/apex/CaseController.addNewCase';
-import { NavigationMixin} from 'lightning/navigation';
+import { NavigationMixin } from 'lightning/navigation';
 
-export default class Case2Details extends NavigationMixin (LightningElement) {
-
+export default class case2Details extends NavigationMixin(LightningElement) {
 
     @wire(CurrentPageReference) pageRef;
     @track account = [];
     @track nameAccount;
-    @track idAccount = ''}
+    @track idAccount = '';
+    @track caseName = null;
+    @track caseDate = null;
+    @track caseDescription = null;
 
-    connectedCallBack(){
+    connectedCallback(){
         registerListener('selectedAccount',this.accountSelected, this);
     }
 
     accountSelected(accountParam){
-        //this.account = accountParam;
-        //console.log('this.accountParam', this.accountParam);
+        console.log('accountParam', accountParam);
         this.account = [];
-        //this.idAccount = '';
-        this.account.push({...JSON.parse(accountParam)});
-        //console.log('this.account', this.account);
-        this.nameAccount = account[0].nome;
-        this.idAccount = account[0].id;
+        this.account.push( {...JSON.parse(accountParam)} );
+        console.log('this.account', this.account[0].nome);
+        this.nameAccount = this.account[0].nome;
+        this.idAccount = this.account[0].id;
     }
 
-    get isSeletedAccount(){
-        return this.account !='';
+    get isSelectedAccount(){
+        return this.idAccount != '';
     }
+
+    handleCaseName(event){
+        this.caseName = event.currentTarget.value;
+    }
+
+    handleCaseDate(event){
+        this.caseDate = event.currentTarget.value;
+    }
+
+    handleDescription(event){
+        this.caseDescription = event.currentTarget.value;
+    }  
+    
+    createNewCase(){
+        addNewCase({accountId : this.idAccount, caseName : this.caseName , caseDate : this.caseDate, caseDescription : this.caseDescription}).then((response) => {
+            this[NavigationMixin.Navigate]({
+                type : 'standard__recordPage',
+                attributes: {
+                    recordId : response.Id,
+                    actionName : 'view'
+                }
+            });  
+        });
+    }
+
+    get isSaveCase(){
+        return this.idAccount != '' && this.caseName && this.caseDate && this.caseDescription;
+    }    
 
 }
-//paramos nos 25 min de video
