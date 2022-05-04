@@ -2,7 +2,7 @@ import { LightningElement, api, track } from 'lwc';
 
 export default class AccountListCard extends LightningElement {
 
-    @track _account;
+    _account;
     @api
     get account(){
         return this._account;

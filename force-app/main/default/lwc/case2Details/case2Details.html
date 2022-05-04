@@ -1,3 +1,12 @@
 <template>
-    
+    <lightning-card class="slds-p-top_medium slds-p-left_medium">
+        <template if:false={isSeletedAccount}>
+            <p style="margin-left: 26px;"> <b>Cliente: </b><font style="color: red;">SELECIONE O CLIENTE</font></p>
+        </template>
+
+        <template if:true={isSeletedAccount}>
+            <p style="margin-left: 26px;"> <b>Cliente: </b>nameAccount</p>
+        </template>
+
+    </lightning-card>
 </template>
